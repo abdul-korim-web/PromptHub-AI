@@ -1,3 +1,4 @@
+import CustomerReviews from "@/components/CustomerReviews";
 import FeaturedPrompts from "@/components/FeaturedPrompts";
 import Hero from "@/components/Hero";
 import TopCreators from "@/components/TopCreators";
@@ -11,6 +12,7 @@ export default function Home() {
     <FeaturedPrompts/>
     <WhyChooseUs/>
     <TopCreators/>
+    <CustomerReviews/>
     </>
   );
 }
