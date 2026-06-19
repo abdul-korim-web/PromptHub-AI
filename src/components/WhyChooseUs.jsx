@@ -3,7 +3,7 @@ import { Card } from "@heroui/react";
 import { ShieldCheck, Zap, Users, Code2, Award, RefreshCw } from "lucide-react";
 
 export default function WhyChooseUs() {
-  // Meaningful value propositions for an AI Prompt Marketplace
+
   const benefits = [
     {
       icon: <ShieldCheck className="w-6 h-6 text-emerald-500" />,
