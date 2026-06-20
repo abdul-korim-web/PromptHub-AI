@@ -34,7 +34,7 @@ export default function PromptDetailsPage() {
     category: "Data Science & Finance",
     aiTool: "ChatGPT (GPT-4o)",
     difficultyLevel: "Pro",
-    visibility: "Public",
+    visibility: "provate",
     copyCount: 843,
     instructions:
       "1. Paste your raw transaction datasets into the primary execution array input.\n2. Execute using temperature strict modes to enforce deterministic math parsing.\n3. Keep token context padding clean.",
