@@ -1,0 +1,483 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card, Avatar, Button, Chip } from "@heroui/react";
+import {
+  Copy,
+  Hand,
+  LayoutCellsLarge,
+  ShieldCheck,
+  Star,
+  Person,
+  Clock,
+  Eye,
+  TriangleRight,
+  Bookmark,
+  BookmarkFill,
+  Xmark,
+  CircleExclamation,
+} from "@gravity-ui/icons";
+
+const IS_LOGGED_IN = true;
+const USER_HAS_PREMIUM = false;
+
+export default function PromptDetailsPage() {
+  const router = useRouter();
+
+  const [prompt, setPrompt] = useState({
+    title: "Enterprise SaaS Financial Analytics Engine Framework",
+    description:
+      "A production-vetted prompt architecture designed to ingest multi-source balance sheets, reconcile cross-border tax matrices, and spit out programmatic JSON payloads for executives without data hallucinations.",
+    content:
+      "/execute-context --model=gpt-4o-financial --ingest=structured_json --rules=gaap,ifrs --temperature=0.0 --strict-typing=true --output=validated_schema.ts",
+    category: "Data Science & Finance",
+    aiTool: "ChatGPT (GPT-4o)",
+    difficultyLevel: "Pro",
+    visibility: "Public",
+    copyCount: 843,
+    instructions:
+      "1. Paste your raw transaction datasets into the primary execution array input.\n2. Execute using temperature strict modes to enforce deterministic math parsing.\n3. Keep token context padding clean.",
+    creator: {
+      name: "Sajib Ahmed",
+      handle: "@sajib_analytics",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop",
+      isVerified: true,
+    },
+    reviews: [
+      {
+        name: "Alex R.",
+        email: "alex@agency.io",
+        rating: 5,
+        date: "2026-06-15",
+        comment:
+          "Saved our finance squad over 30 development hours on reporting pipelines.",
+      },
+    ],
+  });
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("Spam");
+  const [reportText, setReportText] = useState("");
+
+  const [newRating, setNewRating] = useState(5);
+  const [newComment, setNewComment] = useState("");
+
+  const hasAccess =
+    prompt.visibility === "Public" ||
+    (prompt.visibility === "Private" && USER_HAS_PREMIUM);
+
+  const handleBookmarkToggle = () => {
+    if (!IS_LOGGED_IN) return alert("Please log in to bookmark prompts.");
+    setIsBookmarked(!isBookmarked);
+
+    alert(
+      isBookmarked
+        ? "🗑️ Bookmark removed successfully!"
+        : "📌 Prompt added to your bookmarks safely.",
+    );
+  };
+
+  const handleCopyPrompt = () => {
+    if (!IS_LOGGED_IN) return alert("Please log in to copy templates.");
+    if (!hasAccess) return;
+
+    navigator.clipboard.writeText(prompt.content);
+    setPrompt((prev) => ({ ...prev, copyCount: prev.copyCount + 1 }));
+
+    alert(
+      "📋 Copied to clipboard! Platform analytics copy count incremental scale increased.",
+    );
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    const freshReview = {
+      name: "Current User",
+      email: "user@demo.com",
+      rating: newRating,
+      date: new Date().toISOString().split("T")[0],
+      comment: newComment,
+    };
+
+    setPrompt((prev) => ({ ...prev, reviews: [freshReview, ...prev.reviews] }));
+    setNewComment("");
+    alert("🎉 Evaluation captured! Review distributed into public view array.");
+  };
+
+  const handleReportSubmit = (e) => {
+    e.preventDefault();
+    alert(
+      `🚨 Report Submitted!\nReason: ${reportReason}\nDetails: ${reportText || "None"}`,
+    );
+    setIsReportModalOpen(false);
+    setReportText("");
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-[#030712] py-10 transition-colors duration-300 relative">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8 space-y-6">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Chip
+                  size="sm"
+                  variant="flat"
+                  color="primary"
+                  className="font-bold"
+                >
+                  {prompt.aiTool}
+                </Chip>
+                <Chip
+                  size="sm"
+                  variant="dot"
+                  color="danger"
+                  className="font-semibold bg-white dark:bg-transparent"
+                >
+                  {prompt.difficultyLevel}
+                </Chip>
+                {prompt.visibility === "Private" && (
+                  <Chip
+                    size="sm"
+                    className="bg-amber-500 text-black font-extrabold text-[10px] uppercase tracking-wider"
+                  >
+                    Premium Lock
+                  </Chip>
+                )}
+                <span className="text-xs font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-widest flex items-center gap-1 ml-1">
+                  <LayoutCellsLarge className="w-3.5 h-3.5" /> {prompt.category}
+                </span>
+              </div>
+
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+                {prompt.title}
+              </h1>
+              <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed pt-2">
+                {prompt.description}
+              </p>
+            </div>
+
+            <Card className="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-sm overflow-hidden relative">
+              <Card.Header className="px-5 py-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-900/30 flex items-center justify-between">
+                <Card.Title className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  System Execution String
+                </Card.Title>
+                {hasAccess && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    className="font-bold"
+                    endContent={<Copy className="w-3.5 h-3.5" />}
+                    onClick={handleCopyPrompt}
+                  >
+                    Copy Code
+                  </Button>
+                )}
+              </Card.Header>
+
+              <Card.Content className="p-5 relative">
+                {hasAccess ? (
+                  <div className="w-full bg-gray-950 text-emerald-400 font-mono text-sm p-4 rounded-xl border border-gray-900 shadow-inner overflow-x-auto whitespace-pre-wrap select-all">
+                    {prompt.content}
+                  </div>
+                ) : (
+                  <div className="relative p-2">
+                    <div className="w-full bg-gray-950/20 dark:bg-gray-950/40 font-mono text-sm p-6 rounded-xl blur-[6px] select-none pointer-events-none whitespace-pre-wrap">
+                      /execute-context locked-parameter-matrix
+                      --hidden-attributes=true --premium-tier=enforced
+                      --sandbox=restricted-access-token-failure-re-route-payment
+                    </div>
+
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-white/70 dark:bg-[#0f172a]/80 rounded-xl backdrop-blur-sm z-10 border border-amber-500/10">
+                      <h4 className="text-lg font-black text-gray-900 dark:text-white">
+                        Subscribe to Premium Architecture
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mt-1 mb-4">
+                        This macro is part of our vetted operational catalog.
+                        Subscribe to access the terminal string.
+                      </p>
+                      <Button
+                        color="warning"
+                        className="font-extrabold shadow-md px-6 rounded-xl"
+                        onClick={() => router.push("/payment")}
+                      >
+                        Unlock Premium Blueprint
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </Card.Content>
+            </Card>
+
+            <Card className="p-6 border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-sm">
+              <Card.Header className="p-0 border-b border-gray-100 dark:border-white/5 pb-3 mb-4">
+                <Card.Title className="text-sm font-black uppercase text-gray-900 dark:text-white flex items-center gap-2">
+                  <Hand className="w-4 h-4 text-amber-500" /> Operational
+                  Playbook Instructions
+                </Card.Title>
+              </Card.Header>
+              <Card.Content className="p-0">
+                <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                  {prompt.instructions}
+                </p>
+              </Card.Content>
+            </Card>
+
+            <div className="space-y-6">
+              <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />{" "}
+                Evaluations & Feedback Loop
+              </h3>
+
+              {hasAccess && IS_LOGGED_IN ? (
+                <form
+                  onSubmit={handleReviewSubmit}
+                  className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-gray-200 dark:border-white/10 space-y-4 shadow-sm"
+                >
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    Write a Review
+                  </h4>
+
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Rating Score:
+                    </span>
+                    <select
+                      value={newRating}
+                      onChange={(e) => setNewRating(Number(e.target.value))}
+                      className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-lg text-sm px-2 py-1 outline-none text-gray-900 dark:text-white"
+                    >
+                      {[5, 4, 3, 2, 1].map((num) => (
+                        <option key={num} value={num}>
+                          {num} Stars
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <textarea
+                    rows={3}
+                    placeholder="Provide operational test logs, constraints, or feature iterations details..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    required
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl text-sm p-3 placeholder-gray-400 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    color="primary"
+                    className="font-bold rounded-lg px-5"
+                  >
+                    Submit Review
+                  </Button>
+                </form>
+              ) : !hasAccess ? (
+                <div className="p-4 rounded-xl border border-dashed border-gray-200 dark:border-white/5 bg-gray-100/40 dark:bg-gray-900/10 text-center text-xs text-gray-400 italic font-medium">
+                  Review engine disabled. Unlock premium runtime access to post
+                  verification metrics.
+                </div>
+              ) : null}
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {prompt.reviews.map((rev, index) => (
+                  <Card
+                    key={index}
+                    className="p-4 border border-gray-200 dark:border-white/5 bg-white dark:bg-[#0f172a] shadow-none"
+                  >
+                    <Card.Header className="p-0 flex items-center justify-between mb-1.5">
+                      <div className="flex flex-col items-start overflow-hidden max-w-[70%]">
+                        <span className="text-xs font-black text-gray-800 dark:text-gray-200 truncate w-full">
+                          {rev.name}
+                        </span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 truncate w-full">
+                          {rev.email}
+                        </span>
+                      </div>
+                      <div className="flex items-end flex-col gap-1 shrink-0">
+                        <span className="text-[9px] font-mono font-bold text-gray-400">
+                          {rev.date}
+                        </span>
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: rev.rating }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-2.5 h-2.5 text-amber-400 fill-amber-400"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </Card.Header>
+                    <Card.Content className="p-0 mt-2">
+                      <Card.Description className="text-xs text-gray-500 dark:text-gray-400 italic leading-relaxed">
+                        "{rev.comment}"
+                      </Card.Description>
+                    </Card.Content>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-6">
+            <Card className="p-6 border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-sm">
+              <div className="grid grid-cols-2 gap-4 pb-5 border-b border-gray-100 dark:border-white/5 text-center">
+                <div className="flex flex-col items-center border-r border-gray-100 dark:border-white/5">
+                  <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                    {prompt.copyCount}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1 flex items-center gap-1">
+                    <Copy className="w-3 h-3" /> Total Copies
+                  </span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400 inline" />{" "}
+                    5.0
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1 flex items-center gap-1">
+                    <Eye className="w-3 h-3" /> System Audit
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-2.5">
+                <Button
+                  size="lg"
+                  variant={isBookmarked ? "solid" : "flat"}
+                  color={isBookmarked ? "success" : "default"}
+                  className={`w-full font-bold rounded-xl ${isBookmarked ? "text-white" : "text-gray-700 dark:text-gray-300"}`}
+                  onClick={handleBookmarkToggle}
+                  endContent={
+                    isBookmarked ? (
+                      <BookmarkFill className="w-4 h-4" />
+                    ) : (
+                      <Bookmark className="w-4 h-4" />
+                    )
+                  }
+                >
+                  {isBookmarked ? "Bookmarked Structure" : "Bookmark Blueprint"}
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="light"
+                  className="w-full font-bold rounded-xl text-rose-500 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 transition-all"
+                  onClick={() => setIsReportModalOpen(true)}
+                  endContent={<CircleExclamation className="w-4 h-4" />}
+                >
+                  Report Prompt
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-5 border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-sm">
+              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+                <Person className="w-3.5 h-3.5" /> System Architect
+              </h4>
+              <div className="flex items-center gap-3.5">
+                <Avatar className="w-12 h-12 rounded-xl border border-gray-100 dark:border-white/5 shrink-0">
+                  <Avatar.Image
+                    src={prompt.creator.avatar}
+                    alt={prompt.creator.name}
+                  />
+                </Avatar>
+                <div className="overflow-hidden flex flex-col items-start">
+                  <div className="flex items-center gap-1 max-w-full">
+                    <span className="text-base font-bold text-gray-900 dark:text-white tracking-tight truncate">
+                      {prompt.creator.name}
+                    </span>
+                    {prompt.creator.isVerified && (
+                      <ShieldCheck className="w-4 h-4 text-blue-500 shrink-0" />
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-400 dark:text-gray-500 truncate">
+                    {prompt.creator.handle}
+                  </span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {isReportModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-[#0f172a] border border-gray-200 dark:border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6 relative animate-in fade-in zoom-in-95 duration-200">
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              onClick={() => setIsReportModalOpen(false)}
+            >
+              <Xmark className="w-4 h-4" />
+            </button>
+
+            <h3 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2 mb-2">
+              <CircleExclamation className="w-5 h-5 text-rose-500" /> Flag
+              Content Pattern
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              Help us maintain our audited platform quality parameters.
+            </p>
+
+            <form onSubmit={handleReportSubmit} className="space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  Primary Violation Reason
+                </label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl text-sm p-2.5 text-gray-900 dark:text-white outline-none"
+                >
+                  <option value="Inappropriate Content">
+                    Inappropriate Content
+                  </option>
+                  <option value="Spam">Spam/Filler Parameters</option>
+                  <option value="Copyright Violation">
+                    Copyright Violation
+                  </option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  Optional Descriptive Log
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Provide explicit context links or systemic token failure metrics..."
+                  value={reportText}
+                  onChange={(e) => setReportText(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl text-sm p-3 placeholder-gray-400 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-rose-500 shadow-inner"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <Button
+                  size="sm"
+                  variant="light"
+                  className="font-semibold text-gray-500"
+                  onClick={() => setIsReportModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="font-bold bg-rose-600 text-white shadow-sm px-4"
+                >
+                  Submit Infraction Report
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

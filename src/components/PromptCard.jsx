@@ -75,7 +75,7 @@ const PromptCard = ({ prompt }) => {
         </div>
 
         <Link
-          href={prompt?._id}
+          href={`/prompts/${prompt?._id}`}
           size="sm"
           color="primary"
           variant="flat"
