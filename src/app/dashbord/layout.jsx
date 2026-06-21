@@ -1,4 +1,4 @@
-import CreatorSilder from '@/components/dashbordComponents/userDashbordComponents/Creator/CreatorSlider';
+import CreatorSilder from '@/components/dashbordComponents/Creator/CreatorSlider';
 import { UserSilder } from '@/components/dashbordComponents/userDashbordComponents/userSlideBar';
 import React from 'react';
 

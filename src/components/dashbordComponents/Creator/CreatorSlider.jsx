@@ -52,7 +52,7 @@ export default function CreatorSilder() {
           return (
             <Link
               key={item.label}
-              href={`/dashboard/${item.path}`}
+              href={`/dashbord/${item.path}`}
               onClick={() => setActiveTab(item.label)}
               className={`
                 flex 
@@ -135,7 +135,7 @@ export default function CreatorSilder() {
               return (
                 <Link
                   key={item.label}
-                  href={`/dashboard/${item.path}`}
+                  href={`/dashbord/${item.path}`}
                   onClick={() => setActiveTab(item.label)}
                   className={`
                     flex
