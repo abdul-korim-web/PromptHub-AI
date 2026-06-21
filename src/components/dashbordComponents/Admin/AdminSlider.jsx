@@ -52,7 +52,7 @@ export default function AdminSlider() {
           return (
             <Link
               key={item.label}
-              href={`/admin/dashboard/${item.path}`}
+              href={`/dashbord/${item.path}`}
               onClick={() => setActiveTab(item.label)}
               className={`
                 flex 
@@ -139,7 +139,7 @@ export default function AdminSlider() {
               return (
                 <Link
                   key={item.label}
-                  href={`/admin/dashboard/${item.path}`}
+                  href={`/dashbord/${item.path}`}
                   onClick={() => setActiveTab(item.label)}
                   className={`
                     flex
