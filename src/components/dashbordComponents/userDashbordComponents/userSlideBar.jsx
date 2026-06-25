@@ -1,6 +1,4 @@
-"use client";
 
-import React, { useState } from "react";
 import {
   Plus,
   Folder,
@@ -10,12 +8,13 @@ import {
   ArrowRightFromSquare,
 } from "@gravity-ui/icons";
 import { Avatar, Chip } from "@heroui/react";
+import { headers } from "next/headers";
 import Link from "next/link";
+import { auth } from "../../../../lib/auth";
 
-export function UserSilder() {
-  const [activeTab, setActiveTab] = useState("My Prompts");
+export async function UserSilder() {
+  
 
-  // 🛠️ ডাইনামিক নেভিগেশনের জন্য path প্রোপার্টি অ্যাড করা হয়েছে
   const navItems = [
     { icon: Plus, label: "Add Prompt", count: null, path: "add-prompt" },
     { icon: Folder, label: "My Prompts", count: 12, path: "my-prompts" },
@@ -23,7 +22,10 @@ export function UserSilder() {
     { icon: Star, label: "My Reviews", count: 7, path: "my-reviews" },
     { icon: Person, label: "Profile", count: null, path: "profile" },
   ];
-
+const session = await auth.api.getSession({
+  headers: await headers(),
+})
+const user = session?.user
   return (
     <>
   
@@ -49,7 +51,7 @@ export function UserSilder() {
         "
       >
         {navItems.map((item) => {
-          const active = activeTab === item.label;
+         
           return (
             <Link
               key={item.label}
@@ -64,7 +66,7 @@ export function UserSilder() {
                 py-1 
                 relative
                 transition-all
-                ${active ? "text-blue-600 dark:text-blue-500 scale-105" : "text-gray-500 dark:text-gray-400"}
+                ${ true ? "text-blue-600 dark:text-blue-500 scale-105" : "text-gray-500 dark:text-gray-400"}
               `}
             >
               <div className="relative p-1">
@@ -122,12 +124,12 @@ export function UserSilder() {
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
           />
           <div>
-            <h3 className="text-sm font-bold dark:text-white">Alex Rivera</h3>
+            <h3 className="text-sm font-bold dark:text-white">{user?.name}</h3>
             <Chip
               size="sm"
               className="text-[10px] bg-amber-500/10 text-amber-500 font-bold"
             >
-              Premium
+              {user?.plan}
             </Chip>
           </div>
         </div>
@@ -135,7 +137,7 @@ export function UserSilder() {
         <div className="mt-5">
           <nav className="flex flex-col gap-2 w-full">
             {navItems.map((item) => {
-              const active = activeTab === item.label;
+             
               return (
                 <Link
                   key={item.label}
@@ -153,7 +155,7 @@ export function UserSilder() {
                     font-semibold
                     transition
                     ${
-                      active
+                      true
                         ? "bg-blue-600 text-white shadow-sm shadow-blue-500/10"
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10"
                     }
@@ -172,7 +174,7 @@ export function UserSilder() {
                         py-1
                         rounded-full
                         font-mono
-                        ${active ? "bg-white/20 text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}
+                        ${true ? "bg-white/20 text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}
                       `}
                     >
                       {item.count}
