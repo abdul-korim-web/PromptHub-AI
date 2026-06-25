@@ -3,8 +3,12 @@ import { Button } from "@heroui/react";
 
 import { Magnifier, Sliders, ChevronDown } from "@gravity-ui/icons";
 import PromptCard from "@/components/PromptCard";
+import { fetchAllPrompts } from "@/actions/fetchAllPrompts";
 
-export default function AllPromptsPage() {
+export default async function AllPromptsPage() {
+const fetchPrompts = await fetchAllPrompts()
+const prompts =await fetchPrompts?.data
+console.log('prompts', prompts)
 
   const demoPrompts = [
     {
@@ -175,7 +179,7 @@ export default function AllPromptsPage() {
               </div>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {demoPrompts.map((prompt) => (
+              {prompts.map((prompt) => (
                 <PromptCard key={prompt?._id} prompt={prompt}/>
               ))}
             </div>

@@ -1,17 +1,62 @@
 "use client";
 
-import React from "react";
+import React, { useEffect,useState  } from "react";
 import { Avatar, Button, Chip } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { authClient } from "../../../../lib/auth-client";
 
 export default function UserProfileUI() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const stats = [
     { label: "Total Prompts", count: "12", icon: "gravity-ui:folder", color: "text-blue-500 bg-blue-500/10" },
     { label: "Saved Prompts", count: "48", icon: "gravity-ui:bookmark", color: "text-purple-500 bg-purple-500/10" },
     { label: "My Reviews", count: "7", icon: "gravity-ui:star", color: "text-amber-500 bg-amber-500/10" },
   ];
+//  useEffect(() => {
+//    const fetchUserData = async () => {
+//       const {data: tokenData} = await authClient.token()
+//           const token = tokenData?.token
+//       try {
+//         setLoading(true);
+        
+      
+//         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL; 
+        
+//         const response = await fetch(`${serverUrl}/me`, {
+//           method: "GET",
+//           headers: {
+//             "Authorization": `Bearer ${token}`,
+//             "Content-Type": "application/json",
+//           },
+//         });
 
+//         const data = await response.json();
+
+//         if (response.ok && data.success) {
+//           setUserInfo(data.data); 
+//         } else {
+//           setError(data.message || "Failed to fetch user data");
+//         }
+//       } catch (err) {
+//         setError(err.message || "Something went wrong");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+   
+   
+//       fetchUserData();
+//       console.log('userInfo', userInfo)
+//   }, []);
+ const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  console.log('user', user)
+  // if (loading) return <p>Loading user profile...</p>;
+  // if (error) return <p className="text-rose-500">Error: {error}</p>;
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6">
       
@@ -42,11 +87,11 @@ export default function UserProfileUI() {
             </div>
           </div>
 
-          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mt-4">Alex Rivera</h3>
-          <p className="text-xs text-gray-400 mt-0.5">alex.rivera@acme.com</p>
+          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mt-4">{user?.name}</h3>
+          <p className="text-xs text-gray-400 mt-0.5">{user?.email}</p>
           
           <div className="flex gap-2 mt-3">
-            <Chip size="sm" className="bg-amber-500/10 text-amber-500 font-bold">Premium User</Chip>
+            <Chip size="sm" className="bg-amber-500/10 text-amber-500 font-bold">{user?.plan}</Chip>
             <Chip size="sm" variant="flat" color="primary" className="text-[10px]">Prompt Engineer</Chip>
           </div>
 
@@ -89,7 +134,7 @@ export default function UserProfileUI() {
                   <label className="text-xs font-semibold mb-1.5 block text-gray-600 dark:text-gray-400">Full Name</label>
                   <input 
                     type="text" 
-                    defaultValue="Alex Rivera"
+                    defaultValue={user?.name}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-transparent dark:bg-slate-900 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 transition"
                   />
                 </div>
@@ -99,7 +144,7 @@ export default function UserProfileUI() {
                   <input 
                     type="email" 
                     disabled
-                    defaultValue="alex.rivera@acme.com"
+                    defaultValue={user?.email}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-slate-900/50 text-sm text-gray-400 cursor-not-allowed outline-none"
                   />
                 </div>

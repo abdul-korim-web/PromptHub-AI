@@ -20,9 +20,10 @@ const PromptCard = ({ prompt }) => {
       <div className="relative overflow-hidden h-48 w-full z-0">
         <Image
           fill
-          alt={prompt.promptTitle}
+        
+          alt={prompt.title}
           className="object-cover w-full h-48 rounded-none scale-105"
-          src={prompt.thumbnailImage}
+          src={prompt.image}
         />
 
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
@@ -47,17 +48,17 @@ const PromptCard = ({ prompt }) => {
           <Layers className="w-3 h-3" /> {prompt.category}
         </p>
         <Card.Title className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1">
-          {prompt.promptTitle}
+          {prompt.title}
         </Card.Title>
       </Card.Header>
 
       <Card.Content className="px-5 py-2 flex-grow">
         <Card.Description className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed">
-          {prompt.promptDescription}
+          {prompt.description}
         </Card.Description>
 
         <div className="mt-4 flex flex-wrap gap-1">
-          {prompt.tags.map((t, idx) => (
+          {prompt?.tags?.map((t, idx) => (
             <span
               key={idx}
               className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded"
@@ -71,7 +72,7 @@ const PromptCard = ({ prompt }) => {
       <Card.Footer className="p-4 border-t border-gray-100 dark:border-white/10 flex items-center justify-between bg-gray-50/50 dark:bg-gray-900/20">
         <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium">
           <Copy className="w-3.5 h-3.5" />
-          <span>{prompt.copyCount} copies</span>
+          <span>{prompt?.copyCount} copies</span>
         </div>
 
         <Link
