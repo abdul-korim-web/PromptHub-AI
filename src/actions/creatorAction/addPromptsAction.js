@@ -4,7 +4,7 @@ export const addPromptsAction = async (token, promptData) => {
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
 
   try {
-    const result = await fetch(`${serverUrl}/prompt`, {
+    const result = await fetch(`${serverUrl}/creator/prompt`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
