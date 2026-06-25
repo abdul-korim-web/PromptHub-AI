@@ -15,6 +15,8 @@ import { fetchCreatorPrompts } from "@/actions/creatorAction/fetchCreatorPrompts
 import { auth } from "../../../../lib/auth";
 import { headers } from "next/headers";
 import { DeleteCreatorPromptModal } from "./Modal/DeleteCreatorPrompt";
+import EditCreatorPromptModal from "./Modal/EditCreatorPromptModal";
+
 
 export default async function CreatorPrompts() {
   const tokenData = await auth.api.getToken({
@@ -134,13 +136,7 @@ export default async function CreatorPrompts() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button 
-                    type="button"
-                    title="Edit Prompt"
-                    className="p-2.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
+                  <EditCreatorPromptModal token={token} prompt={prompt}/>
                   
                   <DeleteCreatorPromptModal token={token} promptId={prompt?._id}/>
                 </div>
