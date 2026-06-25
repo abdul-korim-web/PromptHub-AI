@@ -14,7 +14,7 @@ export const fetchCreatorPrompts = async (token) => {
     });
 
     const data = await result.json();
-    console.log('data', data)
+
 
     if (result.ok) {
       return { success: true, data: data?.data };

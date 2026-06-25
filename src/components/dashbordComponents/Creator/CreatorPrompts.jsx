@@ -14,14 +14,14 @@ import {
 import { fetchCreatorPrompts } from "@/actions/creatorAction/fetchCreatorPrompts";
 import { auth } from "../../../../lib/auth";
 import { headers } from "next/headers";
+import { DeleteCreatorPromptModal } from "./Modal/DeleteCreatorPrompt";
 
 export default async function CreatorPrompts() {
   const tokenData = await auth.api.getToken({
      headers: await headers()
   })
-  console.log('tokenData', tokenData)
   const token = tokenData?.token;
-  console.log('token', token)
+ 
 
 
   const response = await fetchCreatorPrompts(token);
@@ -60,6 +60,8 @@ export default async function CreatorPrompts() {
         <div>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">My Prompts</h2>
           <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage, track performance, and check approval states.</p>
+          <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Tootal Prompts: <span>{prompts?.length}</span> </p>
+
         </div>
 
         <div className="relative w-full md:w-72">
@@ -81,7 +83,7 @@ export default async function CreatorPrompts() {
         ) : (
           prompts.map((prompt) => (
             <div 
-              key={prompt._id || prompt.id}
+              key={prompt._id}
               className="bg-white dark:bg-[#0f172a] border border-gray-100 dark:border-white/10 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:border-gray-200 dark:hover:border-white/20 transition"
             >
  
@@ -139,13 +141,8 @@ export default async function CreatorPrompts() {
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
-                  <button 
-                    type="button"
-                    title="Delete Prompt"
-                    className="p-2.5 rounded-xl border border-transparent hover:border-rose-500/20 text-rose-500 hover:bg-rose-500/5 transition"
-                  >
-                    <TrashBin className="w-4 h-4" />
-                  </button>
+                  
+                  <DeleteCreatorPromptModal token={token} promptId={prompt?._id}/>
                 </div>
 
               </div>
