@@ -22,6 +22,7 @@ import {
 } from "@gravity-ui/icons";
 import { authClient } from "../../../../lib/auth-client";
 import { bookMarkAction } from "@/actions/bookMarkAction";
+import { addReviewAction } from "@/actions/addReviewAction";
 
 const IS_LOGGED_IN = true;
 const USER_HAS_PREMIUM = false;
@@ -29,7 +30,7 @@ const USER_HAS_PREMIUM = false;
 export default function PromptDetailsPage({ params }) {
   const router = useRouter();
 
-  const { id: promptId } = use(params);
+  let { id: promptId } = use(params);
 
   const [prompt, setPrompt] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -139,24 +140,14 @@ export default function PromptDetailsPage({ params }) {
     );
   };
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async(e) => {
     e.preventDefault();
+    const { data: tokenData } = await authClient.token();
+    const token = tokenData?.token;
+    console.log(token)
     if (!newComment.trim()) return;
-
-    const freshReview = {
-      name: "Current User",
-      email: "user@demo.com",
-      rating: newRating,
-      date: new Date().toISOString().split("T")[0],
-      comment: newComment,
-    };
-
-    setPrompt((prev) => ({
-      ...prev,
-      reviews: [freshReview, ...(prev.reviews || [])],
-    }));
-    setNewComment("");
-    alert("🎉 Evaluation captured! Review distributed into public view array.");
+const result = await addReviewAction(token,newComment,promptId)
+    toast.success(result?.message)
   };
 
   const handleReportSubmit = (e) => {
