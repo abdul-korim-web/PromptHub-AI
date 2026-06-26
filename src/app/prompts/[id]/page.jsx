@@ -31,17 +31,46 @@ export default function PromptDetailsPage({ params }) {
   const router = useRouter();
 
   let { id: promptId } = use(params);
-
   const [prompt, setPrompt] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   const [loadingBookMark, setLoadingBookMark] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
   const [reportText, setReportText] = useState("");
-
+  
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const getComment = async () => {
+     const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/prompt/comment/${promptId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        }
+      );
+  
+      const data = await res.json();
+ setComments(data?.data || [])
+      return data.data;
+  
+    } catch (error) {
+      
+      console.log(error?.message);
+  
+      return {
+        success: false,
+        message: "Failed to fetch comments",
+      };
+    }
+  };
 
   useEffect(() => {
     const getPromptDetails = async () => {
@@ -63,9 +92,9 @@ export default function PromptDetailsPage({ params }) {
         setLoading(false);
       }
     };
-
     if (promptId) {
       getPromptDetails();
+      getComment()
     }
   }, [promptId]);
 
@@ -147,6 +176,7 @@ export default function PromptDetailsPage({ params }) {
     console.log(token)
     if (!newComment.trim()) return;
 const result = await addReviewAction(token,newComment,promptId)
+router.refresh()
     toast.success(result?.message)
   };
 
@@ -330,7 +360,7 @@ const result = await addReviewAction(token,newComment,promptId)
               ) : null}
 
               <div className="grid gap-4 sm:grid-cols-2">
-                {prompt.reviews?.map((rev, index) => (
+                {comments?.map((rev, index) => (
                   <Card
                     key={index}
                     className="p-4 border border-gray-200 dark:border-white/5 bg-white dark:bg-[#0f172a] shadow-none"
@@ -338,15 +368,15 @@ const result = await addReviewAction(token,newComment,promptId)
                     <Card.Header className="p-0 flex items-center justify-between mb-1.5">
                       <div className="flex flex-col items-start overflow-hidden max-w-[70%]">
                         <span className="text-xs font-black text-gray-800 dark:text-gray-200 truncate w-full">
-                          {rev.name}
+                          {rev?.creator?.name}
                         </span>
                         <span className="text-[10px] text-gray-400 dark:text-gray-500 truncate w-full">
-                          {rev.email}
+                          {rev?.creator?.email}
                         </span>
                       </div>
                       <div className="flex items-end flex-col gap-1 shrink-0">
                         <span className="text-[9px] font-mono font-bold text-gray-400">
-                          {rev.date}
+                          {rev?.createdAt}
                         </span>
                         <div className="flex gap-0.5">
                           {Array.from({ length: rev.rating }).map((_, i) => (
