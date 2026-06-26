@@ -3,6 +3,8 @@
 import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Card, Avatar, Button, Chip, Spinner } from "@heroui/react";
+
+  import {  toast } from 'react-toastify';
 import {
   Copy,
   Hand,
@@ -18,6 +20,8 @@ import {
   Xmark,
   CircleExclamation,
 } from "@gravity-ui/icons";
+import { authClient } from "../../../../lib/auth-client";
+import { bookMarkAction } from "@/actions/bookMarkAction";
 
 const IS_LOGGED_IN = true;
 const USER_HAS_PREMIUM = false;
@@ -30,7 +34,7 @@ export default function PromptDetailsPage({ params }) {
   const [prompt, setPrompt] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [loadingBookMark, setLoadingBookMark] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
   const [reportText, setReportText] = useState("");
@@ -101,15 +105,26 @@ export default function PromptDetailsPage({ params }) {
   const isPublic = prompt.visibility?.toLowerCase() === "public";
   const hasAccess = isPublic || (!isPublic && USER_HAS_PREMIUM);
 
-  const handleBookmarkToggle = () => {
-    if (!IS_LOGGED_IN) return alert("Please log in to bookmark prompts.");
-    setIsBookmarked(!isBookmarked);
+  const handleBookmarkToggle = async (promptId) => {
+    try {
+      setLoadingBookMark(true)
+    console.log("promptId", promptId);
+    const { data: tokenData } = await authClient.token();
+    const token = tokenData?.token;
+    console.log("token", token);
+    if (!token) {
+      alert("Login required");
+      return;
+    }
+    const result = await bookMarkAction(token, promptId);
+    console.log(result);
+    toast.success(result?.message)
+    } catch (error) {
+      
+    } finally{
+      setLoadingBookMark(false)
+    }
 
-    alert(
-      isBookmarked
-        ? "🗑️ Bookmark removed successfully!"
-        : "📌 Prompt added to your bookmarks safely.",
-    );
   };
 
   const handleCopyPrompt = () => {
@@ -388,22 +403,17 @@ export default function PromptDetailsPage({ params }) {
               <div className="mt-5 space-y-2.5">
                 <Button
                   size="lg"
-                  variant={isBookmarked ? "solid" : "flat"}
-                  color={isBookmarked ? "success" : "default"}
-                  className={`w-full font-bold rounded-xl ${isBookmarked ? "text-white" : "text-gray-700 dark:text-gray-300"}`}
-                  onClick={handleBookmarkToggle}
-                  endContent={
-                    isBookmarked ? (
-                      <BookmarkFill className="w-4 h-4" />
-                    ) : (
-                      <Bookmark className="w-4 h-4" />
-                    )
-                  }
+                  variant="light"
+                  color="success"
+                  
+                  className={`w-full font-bold rounded-xl  text-gray-700 dark:text-gray-300 ${loadingBookMark ? "cursor-not-allowed" :"cursor-pointer"}`}
+                  onClick={() => handleBookmarkToggle(prompt?._id)}
                 >
-                  {isBookmarked ? "Bookmarked Structure" : "Bookmark Blueprint"}
+                {loadingBookMark ? "Saveing..." :"Save Bookmark "}
                 </Button>
 
                 <Button
+                
                   size="lg"
                   variant="light"
                   className="w-full font-bold rounded-xl text-rose-500 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 transition-all"
