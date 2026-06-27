@@ -1,4 +1,4 @@
-
+"use client"
 import {
   Plus,
   Folder,
@@ -8,12 +8,12 @@ import {
   ArrowRightFromSquare,
 } from "@gravity-ui/icons";
 import { Avatar, Chip } from "@heroui/react";
-import { headers } from "next/headers";
-import Link from "next/link";
-import { auth } from "../../../../lib/auth";
 
-export async function UserSilder() {
-  
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "../../../../lib/auth-client";
+
+export  function UserSilder({params}) {
 
   const navItems = [
     { icon: Plus, label: "Add Prompt", count: null, path: "add-prompt" },
@@ -22,10 +22,14 @@ export async function UserSilder() {
     { icon: Star, label: "My Reviews", count: 7, path: "my-reviews" },
     { icon: Person, label: "Profile", count: null, path: "profile" },
   ];
-const session = await auth.api.getSession({
-  headers: await headers(),
-})
-const user = session?.user
+
+   const { data, isPending } = useSession();
+  const user = data?.user;
+  const pathname = usePathname();
+  const isActive = (href) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
   return (
     <>
   
@@ -66,7 +70,7 @@ const user = session?.user
                 py-1 
                 relative
                 transition-all
-                ${ true ? "text-blue-600 dark:text-blue-500 scale-105" : "text-gray-500 dark:text-gray-400"}
+                ${ isActive ? "text-blue-600 dark:text-blue-500 scale-105" : "text-gray-500 dark:text-gray-400"}
               `}
             >
               <div className="relative p-1">
@@ -155,7 +159,7 @@ const user = session?.user
                     font-semibold
                     transition
                     ${
-                      true
+                      isActive
                         ? "bg-blue-600 text-white shadow-sm shadow-blue-500/10"
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10"
                     }

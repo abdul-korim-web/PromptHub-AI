@@ -15,8 +15,7 @@ import {
 } from "@gravity-ui/icons";
 
 export default function PaymentPage() {
-  const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState(false);
+ 
 
   const benefits = [
     {
@@ -37,33 +36,6 @@ export default function PaymentPage() {
     },
   ];
 
-  const handleStripeCheckout = async () => {
-    setIsProcessing(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const mockTransaction = {
-        transactionId: `ch_${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-        email: "authenticated_user@demo.com",
-        amount: 5.0,
-        date: new Date().toISOString().split("T")[0],
-      };
-
-      alert(
-        `🎉 Payment Successful!\n\n` +
-          `Transaction ID: ${mockTransaction.transactionId}\n` +
-          `User Profile Status Updated: PREMIUM ENFORCED\n\n` +
-          `Redirecting you back to your prompt pipeline...`,
-      );
-      router.back();
-    } catch (error) {
-      console.error("Payment pipeline error:", error);
-      alert("❌ Transaction failed. Please check balance properties.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#030712] py-12 md:py-20 transition-colors duration-300">
@@ -179,16 +151,19 @@ export default function PaymentPage() {
             </div>
 
             <div className="mt-8">
-              <Button
+             <form action="/api/payment" method="POST">
+               <Button
+               type="submit"
                 size="lg"
                 color="primary"
                 className="w-full font-black rounded-xl shadow-md bg-blue-600 dark:bg-blue-500 flex items-center justify-center gap-2"
-                onClick={handleStripeCheckout}
-                isLoading={isProcessing}
-                endContent={!isProcessing && <CreditCard className="w-4 h-4" />}
+            
+               
+              
               >
-                {isProcessing ? "Verifying Transaction..." : "Pay with Stripe"}
+                  Pay with Stripe
               </Button>
+             </form>
 
               <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-3 px-2">
                 By processing this transaction you acquire full operational
