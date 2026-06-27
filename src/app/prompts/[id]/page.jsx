@@ -23,6 +23,7 @@ import {
 import { authClient } from "../../../../lib/auth-client";
 import { bookMarkAction } from "@/actions/bookMarkAction";
 import { addReviewAction } from "@/actions/addReviewAction";
+import { copyPromptAction } from "@/actions/copyPromptAction";
 
 const IS_LOGGED_IN = true;
 const USER_HAS_PREMIUM = false;
@@ -157,13 +158,12 @@ export default function PromptDetailsPage({ params }) {
 
   };
 
-  const handleCopyPrompt = () => {
-    if (!IS_LOGGED_IN) return alert("Please log in to copy templates.");
-    if (!hasAccess) return;
+  const handleCopyPrompt = (promptId) => {
+
 
     navigator.clipboard.writeText(prompt.content);
     setPrompt((prev) => ({ ...prev, copyCount: (prev.copyCount || 0) + 1 }));
-
+const result = copyPromptAction(promptId)
     alert(
       "📋 Copied to clipboard! Platform analytics copy count incremental scale increased.",
     );
@@ -244,7 +244,7 @@ router.refresh()
                     color="primary"
                     className="font-bold"
                     endContent={<Copy className="w-3.5 h-3.5" />}
-                    onClick={handleCopyPrompt}
+                    onClick={()=>handleCopyPrompt(prompt._id)}
                   >
                     Copy Code
                   </Button>
@@ -404,7 +404,7 @@ router.refresh()
               <div className="grid grid-cols-2 gap-4 pb-5 border-b border-gray-100 dark:border-white/5 text-center">
                 <div className="flex flex-col items-center border-r border-gray-100 dark:border-white/5">
                   <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                    {prompt.copyCount || 0}
+                    {prompt?.totalCopy || 0}
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1 flex items-center gap-1">
                     <Copy className="w-3 h-3" /> Total Copies
