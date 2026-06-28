@@ -20,7 +20,7 @@ import {
   Xmark,
   CircleExclamation,
 } from "@gravity-ui/icons";
-import { authClient } from "../../../../lib/auth-client";
+import { authClient, useSession } from "../../../../lib/auth-client";
 import { bookMarkAction } from "@/actions/bookMarkAction";
 import { addReviewAction } from "@/actions/addReviewAction";
 import { copyPromptAction } from "@/actions/copyPromptAction";
@@ -29,6 +29,10 @@ const IS_LOGGED_IN = true;
 const USER_HAS_PREMIUM = false;
 
 export default function PromptDetailsPage({ params }) {
+  const {data ,isPending} = useSession()
+
+  const user = data?.user
+ 
   const router = useRouter();
 
   let { id: promptId } = use(params);
@@ -134,7 +138,7 @@ export default function PromptDetailsPage({ params }) {
   }
 
   const isPublic = prompt.visibility?.toLowerCase() === "public";
-  const hasAccess = isPublic || (!isPublic && USER_HAS_PREMIUM);
+  const hasAccess = isPublic || (!isPublic && user?.plan=="pro");
 
   const handleBookmarkToggle = async (promptId) => {
     try {
@@ -309,7 +313,7 @@ router.refresh()
                 Evaluations & Feedback Loop
               </h3>
 
-              {hasAccess && IS_LOGGED_IN ? (
+              {hasAccess && user ? (
                 <form
                   onSubmit={handleReviewSubmit}
                   className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-gray-200 dark:border-white/10 space-y-4 shadow-sm"

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-// আপনার প্রপার পাথটি নিশ্চিত করুন
 import {
   Menu,
   X,
@@ -95,7 +94,7 @@ export default function Navbar() {
             </Link>
 
             {user && (
-              <Link href="/dashboard" className={getLinkClass("/dashboard")}>
+              <Link href="/dashbord" className={getLinkClass("/dashboard")}>
                 <span className="flex items-center gap-1">
                   <LayoutDashboard className="w-4 h-4" />
                   {user.role === "creator" ? "Creator Hub" : "Dashboard"}
@@ -206,7 +205,7 @@ export default function Navbar() {
 
           {user && (
             <Link
-              href="/dashboard"
+              href="/dashbord"
               onClick={toggleMenu}
               className="block px-3 py-2 rounded-lg text-base font-medium text-gray-300 hover:bg-gray-800 hover:text-white"
             >
