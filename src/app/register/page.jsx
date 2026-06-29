@@ -40,7 +40,7 @@ export default function RegisterPage() {
       password,
       name,
       role, 
-      callbackURL: "/dashboard",
+      callbackURL: "/dashbord",
     });
 
     setLoading(false);
@@ -50,7 +50,7 @@ export default function RegisterPage() {
     } else {
       setSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/dashbord");
       }, 1500);
     }
   };

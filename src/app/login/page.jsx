@@ -48,7 +48,7 @@ export default function LoginPage() {
     setError("");
     await authClient.signIn.social({
       provider,
-      callbackURL: "/dashboard",
+      callbackURL: "/dashbord",
     });
   };
 
