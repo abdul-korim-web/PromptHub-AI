@@ -13,11 +13,11 @@ export const fetchAllPrompts = async () => {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      return { success: true, data: data.data };
+      return { success: true, data: data.data || [] };
     } else {
       return { success: false, error: data?.message || "Failed to fetch prompts" ,data:[]};
     }
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: error.message,data:[] };
   }
 };

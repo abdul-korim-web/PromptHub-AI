@@ -7,7 +7,7 @@ import { fetchAllPrompts } from "@/actions/fetchAllPrompts";
 
 export default async function AllPromptsPage() {
 const fetchPrompts = await fetchAllPrompts()
-const prompts =await fetchPrompts?.data
+const prompts =await fetchPrompts?.data 
 console.log('prompts', prompts)
 
   
