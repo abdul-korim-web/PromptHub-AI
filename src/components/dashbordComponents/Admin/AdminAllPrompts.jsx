@@ -24,7 +24,7 @@ export default function AdminPromptsTable() {
   useEffect(() => {
     const getPrompts = async () => {
       try {
-        const res = await fetch(`${API}/allprompts`, { cache: "no-store" });
+        const res = await fetch(`${API}/admin/prompt/get`, { cache: "no-store" });
         const data = await res.json();
         setPrompts(data.data || []);
       } catch (error) {
