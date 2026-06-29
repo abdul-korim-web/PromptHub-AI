@@ -7,6 +7,7 @@ export const fetchAllPrompts = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+       cache: "no-store",
     });
 
     const data = await res.json();
